@@ -1,0 +1,130 @@
+Here the codes!!!
+class Calculator {
+    constructor() {
+        this.display = document.querySelector('.display');
+        this.buttons = document.querySelectorAll('button');
+        this.currentValue = '0';
+        this.prevValue = null;
+        this.operator = null;
+        this.shouldResetScreen = false;
+
+        this.init();
+    }
+
+    init() {
+        this.buttons.forEach(button => {
+            button.addEventListener('click', () => this.handleButton(button.dataset.value));
+        });
+        document.addEventListener('keydown', (e) => this.handleKeyboard(e));
+    }
+
+    handleButton(value) {
+        if (!isNaN(value)) {
+            this.handleNumber(value);
+        } else if (value === '.') {
+            this.handleDecimal();
+        } else if (value === 'clear') {
+            this.clear();
+        } else if (value === 'delete') {
+            this.handleDelete();
+        } else if (value === 'percentage') {
+            this.handlePercentage();
+        } else if (['add', 'subtract', 'multiply', 'divide'].includes(value)) {
+            this.handleOperator(value);
+        } else if (value === 'equals') {
+            this.calculate();
+        }
+        this.updateDisplay();
+    }
+
+    handleNumber(number) {
+        if (this.shouldResetScreen) {
+            this.currentValue = '0';
+            this.shouldResetScreen = false;
+        }
+        this.currentValue = this.currentValue === '0' ? number : this.currentValue + number;
+    }
+
+    handleDecimal() {
+        if (!this.currentValue.includes('.')) {
+            this.currentValue += '.';
+        }
+    }
+
+    handleDelete() {
+        if (this.currentValue.length > 1) {
+            this.currentValue = this.currentValue.slice(0, -1);
+        } else {
+            this.currentValue = '0';
+        }
+    }
+
+    handlePercentage() {
+        this.currentValue = (parseFloat(this.currentValue) / 100).toString();
+    }
+
+    handleOperator(operator) {
+        this.prevValue = this.currentValue;
+        this.operator = operator;
+        this.shouldResetScreen = true;
+    }
+
+    calculate() {
+        if (!this.operator || !this.prevValue) return;
+        
+        const prev = parseFloat(this.prevValue);
+        const current = parseFloat(this.currentValue);
+        let result;
+
+        switch (this.operator) {
+            case 'add': result = prev + current; break;
+            case 'subtract': result = prev - current; break;
+            case 'multiply': result = prev * current; break;
+            case 'divide': result = prev / current; break;
+        }
+
+        this.currentValue = Number.isInteger(result) ? 
+            result.toString() : 
+            result.toFixed(5).replace(/\.?0+$/, '');
+        this.operator = null;
+        this.prevValue = null;
+        this.shouldResetScreen = true;
+    }
+
+    clear() {
+        this.currentValue = '0';
+        this.prevValue = null;
+        this.operator = null;
+        this.shouldResetScreen = false;
+    }
+
+    updateDisplay() {
+        this.display.textContent = this.currentValue.length > 10 ?
+            parseFloat(this.currentValue).toExponential(5) :
+            this.currentValue;
+    }
+
+    handleKeyboard(e) {
+        const keyMap = {
+            'Escape': 'clear',
+            'Backspace': 'delete',
+            'Enter': 'equals',
+            '+': 'add',
+            '-': 'subtract',
+            '*': 'multiply',
+            '/': 'divide',
+            '.': 'decimal',
+            '%': 'percentage'
+        };
+
+        if (keyMap[e.key]) {
+            e.preventDefault();
+            this.handleButton(keyMap[e.key]);
+        } else if (!isNaN(e.key)) {
+            e.preventDefault();
+            this.handleButton(e.key);
+        }
+    }
+}
+
+new Calculator();
