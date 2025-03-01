@@ -11,13 +11,13 @@ Here  are the code!!!
     <div class="calculator">
         <div class="display">0</div>
         <div class="buttons">
-            <!-- Top Row -->
+            
             <button class="operator" data-value="clear">AC</button>
             <button class="operator" data-value="delete">⌫</button>
             <button class="operator" data-value="percentage">%</button>
             <button class="operator" data-value="divide">÷</button>
             
-            <!-- Number Rows -->
+        
             <button data-value="7">7</button>
             <button data-value="8">8</button>
             <button data-value="9">9</button>
@@ -33,7 +33,7 @@ Here  are the code!!!
             <button data-value="3">3</button>
             <button class="operator" data-value="add">+</button>
             
-            <!-- Bottom Row -->
+        
             <button data-value="0" class="span-2">0</button>
             <button data-value="decimal">.</button>
             <button class="operator" data-value="equals">=</button>
